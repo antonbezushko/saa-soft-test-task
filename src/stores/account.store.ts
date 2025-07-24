@@ -6,6 +6,7 @@ import { accountRepository } from '@/repository/instance'
 import { omit } from '@/lib/utils'
 import { AccountMapper } from '@/mapper/account.mapper'
 import { AccountFactory, isIdAccountTemp } from '@/factory/account.factory'
+import { accountConfig } from '@/config/account.config'
 
 export const useAccountStore = defineStore('account', () => {
   const accounts = ref<Array<Account>>([])
@@ -25,21 +26,31 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   function addTempAccount() {
-    accounts.value.push(AccountFactory.createTemporary(AccountType.LOCAL))
+    accounts.value.push(AccountFactory.createTemporary(accountConfig.defaultAccountType))
   }
 
   async function deleteAccount(id: string) {
     if (!isIdAccountTemp(id)) {
-      await accountRepository.delete(id)
+      try {
+        await accountRepository.delete(id)
+      } catch {
+        throw new Error('Failed while delete account')
+      }
     }
     accounts.value = accounts.value.filter((acc) => acc.id !== id)
   }
 
   function validateAccountData(account: Account) {
     const res = accountSchema.safeParse(account)
-    accountValidationErrors.value[account.id] = {}
+
+    if (accountValidationErrors.value[account.id]) {
+      delete accountValidationErrors.value[account.id]
+    }
 
     if (!res.success) {
+      if (!accountValidationErrors.value[account.id]) {
+        accountValidationErrors.value[account.id] = {}
+      }
       res.error.issues.forEach((issue) => {
         accountValidationErrors.value[account.id][issue.path.join('') as keyof Account] =
           issue.message
@@ -72,7 +83,7 @@ export const useAccountStore = defineStore('account', () => {
       }
     } else {
       try {
-        savedAccount = await accountRepository.update(account.id, account)
+        await accountRepository.update(account.id, account)
       } catch {
         throw new Error('Failed to update existed account')
       }
@@ -97,8 +108,10 @@ export const useAccountStore = defineStore('account', () => {
     deleteAccount,
     isLoading,
     loadAccounts,
+    validateAccountData,
     saveAccount,
     addTempAccount,
+    isDataLoaded,
     accounts,
     accountValidationErrors,
     saveAccountWhenTypeChanged,

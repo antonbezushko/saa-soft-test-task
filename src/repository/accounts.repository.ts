@@ -35,10 +35,6 @@ export class LocalAccountRepository implements IAccountRepository {
     return this.getAccounts()
   }
 
-  async getById(id: string): Promise<Account | null> {
-    return this.getAccounts().find((a) => a.id === id) || null
-  }
-
   async create(account: Omit<Account, 'id'>): Promise<Account> {
     const accounts = this.getAccounts()
 
