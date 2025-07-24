@@ -14,21 +14,6 @@ describe('useAccountStore', () => {
     vi.clearAllMocks()
   })
 
-  async function addAccounts(accounts: Account[]) {
-    const mockAccounts: Account[] = [
-      AccountFactory.create({ type: AccountType.LOCAL, login: 'user1', password: 'pass1' }),
-      AccountFactory.create({ type: AccountType.LDAP, login: 'user2', password: '' }),
-    ]
-
-    vi.spyOn(accountRepository, 'getAll').mockResolvedValue(mockAccounts)
-
-    const store = useAccountStore()
-    await store.loadAccounts()
-
-    expect(accountRepository.getAll).toHaveBeenCalled()
-    expect(store.accounts).toEqual(mockAccounts)
-  }
-
   describe('loadAccounts', () => {
     test('should load accounts', async () => {
       const mockAccounts: Account[] = [
@@ -278,6 +263,7 @@ describe('useAccountStore', () => {
       vi.spyOn(accountFactoryModule, 'isIdAccountTemp').mockReturnValue(true)
       const mock = vi.spyOn(accountRepository, 'create')
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...accountData } = tempAcc
 
       await store.saveAccount(tempAcc)
