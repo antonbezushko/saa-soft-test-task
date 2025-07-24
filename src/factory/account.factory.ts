@@ -49,7 +49,7 @@ export class AccountFactory {
     }
   }
 
-  static createTemporary(type: AccountType = AccountType.LOCAL): Account {
+  static createTemporary(type: AccountType): Account {
     return {
       id: generateAccountTempId(),
       type,
