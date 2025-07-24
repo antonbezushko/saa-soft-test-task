@@ -3519,6 +3519,11 @@ vue-router@^4.5.1:
   dependencies:
     "@vue/devtools-api" "^6.6.4"
 
+vue-sonner@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/vue-sonner/-/vue-sonner-2.0.2.tgz#9728fc8521c5d78b6ce5a8a92c68c55d287a68cd"
+  integrity sha512-cN6onnN6aBOZ56YWN8CMj6t4zqbz/XlenE+jx5z+mgduMMelFo6B6G+e2Q6hhxU9YFiV16MXG2MBPluZabyElQ==
+
 vue-tsc@^2.2.10:
   version "2.2.12"
   resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-2.2.12.tgz#5f719b08ef7390a763c1a20169ca5c9d09d55688"
