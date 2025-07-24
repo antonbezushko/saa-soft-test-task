@@ -1,60 +1,17 @@
 import { accountConfig } from '@/config/account.config'
-import {
-  AccountType,
-  type Account,
-  type AccountStorage,
-  type IAccountRepository,
-} from '@/types/account.type'
-import { v4 as uuidv4 } from 'uuid'
+import { AccountFactory } from '@/factory/account.factory'
+import { AccountMapper } from '@/mapper/account.mapper'
+import { type Account, type AccountStorage, type IAccountRepository } from '@/types/account.type'
 
 export class LocalAccountRepository implements IAccountRepository {
   private readonly storageKey = accountConfig.storageKey
 
   private prepareForStorage(accounts: Account[]): AccountStorage[] {
-    return accounts.map((account) => {
-      if (account.type === AccountType.LOCAL) {
-        return {
-          ...account,
-          label: account.label
-            ? account.label
-                .split(accountConfig.labelDevider)
-                .map((label) => ({ text: label.trim() }))
-                .filter((label) => label.text.length > 0)
-            : undefined,
-        }
-      } else {
-        return {
-          ...account,
-          password: null,
-          label: account.label
-            ? account.label
-                .split(accountConfig.labelDevider)
-                .map((label) => ({ text: label.trim() }))
-                .filter((label) => label.text.length > 0)
-            : undefined,
-        }
-      }
-    })
+    return AccountMapper.arrayToStorage(accounts)
   }
 
   private parseFromStorage(accounts: AccountStorage[]): Account[] {
-    return accounts.map((account) => {
-      if (account.type === AccountType.LOCAL) {
-        return {
-          ...account,
-          label: account.label
-            ? account.label.map((l) => l.text).join(accountConfig.labelDevider)
-            : undefined,
-        }
-      } else
-        return {
-          ...account,
-          password: '',
-          label: account.label
-            ? account.label.map((l) => l.text).join(accountConfig.labelDevider)
-            : undefined,
-        }
-    })
+    return AccountMapper.arrayFromStorage(accounts)
   }
 
   private getAccounts(): Account[] {
@@ -85,19 +42,7 @@ export class LocalAccountRepository implements IAccountRepository {
   async create(account: Omit<Account, 'id'>): Promise<Account> {
     const accounts = this.getAccounts()
 
-    const newAccount: Account =
-      account.type === AccountType.LOCAL
-        ? {
-            ...account,
-            type: AccountType.LOCAL,
-            password: account.password,
-            id: uuidv4(),
-          }
-        : {
-            ...account,
-            password: '',
-            id: uuidv4(),
-          }
+    const newAccount: Account = AccountFactory.create(account)
 
     this.saveAccounts([...accounts, newAccount])
 

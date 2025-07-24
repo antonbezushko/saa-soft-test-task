@@ -41,7 +41,8 @@ export interface LdapAccountStorage extends AccountStorageBase {
 export type Account = LocalAccount | LdapAccount
 export type AccountStorage = LocalAccountStorage | LdapAccountStorage
 
-export type AccountValidationErrors = Record<string, Partial<Record<keyof Account, string>>>
+export type AccountValidationValue = Partial<Record<keyof Account, string>>
+export type AccountValidationErrors = Record<string, AccountValidationValue>
 
 export interface IAccountRepository {
   getAll(): Promise<Account[]>

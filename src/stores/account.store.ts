@@ -1,19 +1,11 @@
 import { defineStore } from 'pinia'
 import { AccountType, type Account, type AccountValidationErrors } from '@/types/account.type'
-import { accountConfig } from '@/config/account.config'
 import { accountSchema } from '@/validation/account.validation'
 import { computed, ref } from 'vue'
 import { accountRepository } from '@/repository/instance'
-import { v4 as uuidv4 } from 'uuid'
 import { omit } from '@/lib/utils'
-
-export const generateAccountTempId = (): string => {
-  return accountConfig.tempIdPrefix + uuidv4()
-}
-
-export const isIdAccountTemp = (id: string): boolean => {
-  return id.startsWith(accountConfig.tempIdPrefix)
-}
+import { AccountMapper } from '@/mapper/account.mapper'
+import { AccountFactory, isIdAccountTemp } from '@/factory/account.factory'
 
 export const useAccountStore = defineStore('account', () => {
   const accounts = ref<Array<Account>>([])
@@ -33,12 +25,7 @@ export const useAccountStore = defineStore('account', () => {
   }
 
   function addTempAccount() {
-    accounts.value.push({
-      id: generateAccountTempId(),
-      login: '',
-      password: '',
-      type: accountConfig.defaultAccountType,
-    })
+    accounts.value.push(AccountFactory.createTemporary(AccountType.LOCAL))
   }
 
   async function deleteAccount(id: string) {
@@ -73,7 +60,6 @@ export const useAccountStore = defineStore('account', () => {
 
     if (isIdAccountTemp(account.id)) {
       try {
-        // Create new account without temp id
         const accountData = omit(account, ['id'])
         savedAccount = await accountRepository.create(accountData)
         // Replace temp id with new
@@ -85,7 +71,6 @@ export const useAccountStore = defineStore('account', () => {
         throw new Error('Failed to save new account')
       }
     } else {
-      // Update existed
       try {
         savedAccount = await accountRepository.update(account.id, account)
       } catch {
@@ -98,18 +83,10 @@ export const useAccountStore = defineStore('account', () => {
     const accountIndex = accounts.value.findIndex((acc) => acc.id === accountId)
     if (accountIndex === -1) return
 
-    const updatedAccount: Account =
-      newType === AccountType.LOCAL
-        ? {
-            ...accounts.value[accountIndex],
-            type: newType,
-            password: accounts.value[accountIndex].password,
-          }
-        : {
-            ...accounts.value[accountIndex],
-            type: newType,
-            password: '',
-          }
+    const updatedAccount: Account = AccountMapper.forTypeChange(
+      accounts.value[accountIndex],
+      newType,
+    )
 
     accounts.value.splice(accountIndex, 1, updatedAccount)
 

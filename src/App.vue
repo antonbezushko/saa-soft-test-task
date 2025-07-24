@@ -5,7 +5,7 @@ import 'vue-sonner/style.css'
 
 <template>
   <Toaster richColors class="pointer-events-auto" position="bottom-center" />
-  <main class="bg-background min-h-screen">
+  <main class="bg-background min-h-screen px-4">
     <RouterView />
   </main>
 </template>
