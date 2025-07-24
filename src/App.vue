@@ -1,6 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Toaster } from '@/components/ui/sonner'
+import 'vue-sonner/style.css'
+</script>
 
 <template>
+  <Toaster richColors class="pointer-events-auto" position="bottom-center" />
   <main class="bg-background min-h-screen">
     <RouterView />
   </main>
