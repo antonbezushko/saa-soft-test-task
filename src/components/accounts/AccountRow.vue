@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
-import Button from '@/components/ui/button/Button.vue'
-import Input from '@/components/ui/input/Input.vue'
-import Select from '@/components/ui/select/Select.vue'
-import SelectContent from '@/components/ui/select/SelectContent.vue'
-import SelectGroup from '@/components/ui/select/SelectGroup.vue'
-import SelectItem from '@/components/ui/select/SelectItem.vue'
-import SelectTrigger from '@/components/ui/select/SelectTrigger.vue'
-import SelectValue from '@/components/ui/select/SelectValue.vue'
+import Button from '@/components/ui/button/AppButton.vue'
+import Input from '@/components/ui/input/AppInput.vue'
+import Select from '@/components/ui/select/AppSelect.vue'
+import SelectContent from '@/components/ui/select/AppSelectContent.vue'
+import SelectGroup from '@/components/ui/select/AppSelectGroup.vue'
+import SelectItem from '@/components/ui/select/AppSelectItem.vue'
+import SelectTrigger from '@/components/ui/select/AppSelectTrigger.vue'
+import SelectValue from '@/components/ui/select/AppSelectValue.vue'
 import { accountConfig } from '@/config/account.config'
 import {
   AccountType,
