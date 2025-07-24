@@ -46,7 +46,6 @@ export type AccountValidationErrors = Record<string, AccountValidationValue>
 
 export interface IAccountRepository {
   getAll(): Promise<Account[]>
-  getById(id: string): Promise<Account | null>
   create(account: Omit<Account, 'id'>): Promise<Account>
   update(id: string, account: Partial<Account>): Promise<Account>
   delete(id: string): Promise<void>
